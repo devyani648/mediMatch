@@ -1,0 +1,53 @@
+from typing import List, Optional, Any, Dict
+import time
+from sqlalchemy import text
+
+
+class SearchService:
+    def __init__(self, db):
+        self.db = db
+
+    def vector_search(
+        self,
+        query_embedding: List[float],
+        limit: int = 10,
+        modality: Optional[str] = None,
+        body_part: Optional[str] = None,
+        similarity_threshold: float = 0.0,
+    ) -> Dict[str, Any]:
+        start = time.time()
+
+        # Build SQL dynamically to allow optional filters
+        filters = []
+        params = {"q": query_embedding, "limit": limit}
+
+        if modality:
+            filters.append("modality = :modality")
+            params["modality"] = modality
+        if body_part:
+            filters.append("body_part = :body_part")
+            params["body_part"] = body_part
+
+        where_clause = ""
+        if filters:
+            where_clause = "WHERE " + " AND ".join(filters)
+
+        # Use pgvector operator <=> which returns cosine distance; similarity = 1 - distance
+        sql = f"""
+        SELECT *, 1 - (image_embedding <=> :q) AS similarity
+        FROM medical_cases
+        {where_clause}
+        ORDER BY similarity DESC
+        LIMIT :limit
+        """
+
+        result = self.db.execute(text(sql), params)
+        rows = result.mappings().all()
+
+        results = []
+        for row in rows:
+            r = dict(row)
+            results.append(r)
+
+        query_time_ms = (time.time() - start) * 1000.0
+        return {"results": results, "total": len(results), "query_time_ms": query_time_ms}
