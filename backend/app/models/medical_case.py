@@ -23,6 +23,8 @@ class MedicalCase(Base):
     image_embedding = Column(Vector(512), nullable=False)
     text_embedding = Column(Vector(512), nullable=True)
     source = Column(String, default="custom")
-    metadata = Column(JSONB, nullable=True)
+    # `metadata` is a reserved attribute name on Declarative Base (Base.metadata).
+    # Use a different Python attribute name but keep the DB column name as `metadata`.
+    metadata_json = Column("metadata", JSONB, nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), onupdate=func.now(), server_default=func.now())

@@ -17,12 +17,9 @@ class SearchService:
     ) -> Dict[str, Any]:
         start = time.time()
 
-        # Convert list to pgvector format string
-        query_vector_str = '[' + ','.join(map(str, query_embedding)) + ']'
-
         # Build SQL dynamically to allow optional filters
         filters = []
-        params = {"limit": limit}
+        params = {"q": query_embedding, "limit": limit}
 
         if modality:
             filters.append("modality = :modality")
@@ -37,7 +34,7 @@ class SearchService:
 
         # Use pgvector operator <=> which returns cosine distance; similarity = 1 - distance
         sql = f"""
-        SELECT *, 1 - (image_embedding <=> '{query_vector_str}'::vector) AS similarity
+        SELECT *, 1 - (image_embedding <=> CAST(:q AS vector)) AS similarity
         FROM medical_cases
         {where_clause}
         ORDER BY similarity DESC
