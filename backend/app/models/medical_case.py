@@ -18,7 +18,7 @@ class MedicalCase(Base):
     diagnosis = Column(Text, nullable=False)
     findings = Column(Text, nullable=True)
     clinical_notes = Column(Text, nullable=True)
-    image_path = Column(String, nullable=False)
+    image_path = Column(String, nullable=True)
     image_url = Column(String, nullable=True)
     image_embedding = Column(Vector(512), nullable=False)
     text_embedding = Column(Vector(512), nullable=True)
