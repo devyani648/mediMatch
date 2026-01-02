@@ -13,6 +13,13 @@
 
 MediMatch is an intelligent medical case retrieval system that enables healthcare professionals to search for similar medical cases using natural language queries or medical images. Built with state-of-the-art AI technology, it uses OpenAI's CLIP model for semantic understanding and pgvector for efficient similarity search.
 
+Screenshots
+
+<img width="1902" height="892" alt="image" src="https://github.com/user-attachments/assets/1b6d9cc9-5333-4c62-8872-ce9c8396f52c" />
+<img width="1893" height="897" alt="image" src="https://github.com/user-attachments/assets/2cb7332a-51ac-4b4d-ad3e-5a8d7a9043b0" />
+
+
+
 ### 🎯 Key Features
 
 - 🔍 **Multi-Modal Search**: Search using text descriptions or medical images
